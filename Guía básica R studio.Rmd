@@ -1,0 +1,287 @@
+---
+title: "Guía básica de análisis genético en R"
+author: "Sergio Pérez Oliveira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# Introducción
+Esta guía proporciona los pasos esenciales para realizar análisis genéticos utilizando R y RStudio. Se explicará la instalación de paquetes, carga de datos, análisis exploratorio, frecuencias genotípicas y modelos de regresión.
+
+## 1. Instalación de R y RStudio
+
+Para comenzar con el análisis genético en R, es fundamental instalar tanto el lenguaje de programación R como su entorno de desarrollo integrado (IDE) RStudio. A continuación, se describen los pasos detallados para instalar cada uno:
+
+### 1.1 Instalación de R
+1. Visita la página oficial de CRAN en [CRAN](https://cran.r-project.org/).
+2. Selecciona el sistema operativo correspondiente (Windows, macOS o Linux).
+3. Descarga el archivo de instalación adecuado.
+4. Ejecuta el archivo descargado y sigue las instrucciones del asistente de instalación.
+5. Una vez instalado, puedes abrir R desde el menú de programas de tu sistema.
+
+### 1.2 Instalación de RStudio
+1. Accede al sitio web de Posit en [Posit](https://posit.co/download/rstudio-desktop/).
+2. Descarga la versión gratuita de RStudio Desktop.
+3. Instala RStudio siguiendo las instrucciones del instalador.
+4. Abre RStudio y verifica que R está correctamente vinculado comprobando que en la consola aparece la versión instalada de R.
+
+### 1.3 Verificación de la instalación
+Para comprobar que la instalación de R y RStudio fue exitosa, abre RStudio y ejecuta el siguiente comando en la consola:
+```r
+version
+```
+Este comando mostrará la versión de R instalada y otros detalles del entorno.
+
+### 1.4 El entorno de RStudio
+RStudio es un entorno de desarrollo integrado (IDE) diseñado para facilitar el trabajo con R. Su interfaz se compone de varias ventanas principales:
+
+1. **Consola**: Es donde se ejecutan los comandos de R directamente.
+2. **Editor de Scripts**: Permite escribir y guardar código en archivos `.R`, `.Rmd`, `.qmd`, entre otros.
+3. **Environment y History**: Muestra los objetos cargados en la sesión actual y el historial de comandos ejecutados.
+4. **Plots, Packages, Help y Viewer**:
+   - *Plots*: Muestra los gráficos generados con R.
+   - *Packages*: Permite gestionar los paquetes instalados.
+   - *Help*: Proporciona documentación sobre funciones y paquetes.
+   - *Viewer*: Se utiliza para visualizar documentos HTML generados con R Markdown o Quarto.
+
+Conocer estas ventanas ayuda a mejorar la productividad y organización del trabajo en RStudio.
+
+## 2. Creación de nuevos archivos en RStudio
+
+En RStudio, se pueden crear diferentes tipos de archivos según la necesidad del análisis. A continuación, se explican los tipos principales en orden de sencillez:
+
+### 2.1 R Script (`.R`)
+Un archivo de script de R es un documento de texto donde se escriben y ejecutan líneas de código en R. Es útil para análisis secuenciales, depuración de código y desarrollo de funciones.
+- Para crear un nuevo script en RStudio: **Archivo > Nuevo archivo > Script R**
+- Se ejecutan las líneas de código seleccionándolas y presionando `Ctrl + Enter` (Windows/Linux) o `Cmd + Enter` (Mac).
+
+### 2.2 R Notebook (`.Rmd` con interactividad)
+Un R Notebook es similar a un R Script pero con la capacidad de ejecutar fragmentos de código interactivamente sin necesidad de ejecutar todo el documento.
+- Para crear un Notebook: **Archivo > Nuevo archivo > R Notebook**
+- Útil para exploración de datos en tiempo real, permitiendo visualizar resultados de forma inmediata.
+
+### 2.3 R Markdown (`.Rmd`)
+R Markdown es un formato de documento que permite combinar texto, código y resultados en un solo archivo. Es útil para generar informes dinámicos.
+- Para crear un nuevo archivo R Markdown: **Archivo > Nuevo archivo > R Markdown**
+- Se puede renderizar en formatos como HTML, PDF o Word ejecutando el botón "Knit".
+
+### 2.4 Quarto (`.qmd`)
+Quarto es la evolución de R Markdown, con mayor compatibilidad y soporte para múltiples lenguajes de programación como Python, Julia y Observable.
+- Se crea en **Archivo > Nuevo archivo > Quarto Document**
+- Permite personalización avanzada de informes y dashboards.
+- **Quarto Document:** Se utiliza para la creación de informes similares a R Markdown pero con mayor flexibilidad y diseño mejorado.
+- **Quarto Presentation:** Permite generar presentaciones interactivas en HTML, PDF o PowerPoint, integrando código, gráficos y texto de manera elegante.
+
+---
+
+###Comentarios
+
+Al igual que con otros códigos de programación es frecuente incluir entre los comandos comentarios. Generalmente los comentarios se utilizan para:
+
+-Explicar el código que has escrito en R y hacerlo más legible.
+
+-Evitar la ejecución de líneas de código, puede ser porque deseas probar algún código alternativo.
+
+En R los comentarios comienzan con #. Así que, al ejecutar un Script en R, R ignorará todo lo que comience con #
+
+## 3. Instalación de paquetes necesarios
+
+En R, las funciones que se ejecutan pertenecen a paquetes que deben estar previamente instalados y cargados en la sesión. Existen varias formas de instalar paquetes según la fuente desde la que se obtienen.
+
+
+### 3.1 Instalación desde CRAN (recomendada)
+CRAN es el repositorio oficial de R, donde se encuentran la mayoría de los paquetes disponibles.
+- Para instalar paquetes desde CRAN usando la consola de RStudio:
+```r
+install.packages("nombre_del_paquete")
+```
+- Para instalar varios paquetes a la vez:
+```r
+install.packages(c("tidyverse", "rstatix", "ggpubr", "tableone"))
+```
+
+### 3.2 Instalación desde un archivo ZIP
+Si tienes un paquete en formato ZIP, puedes instalarlo manualmente:
+- En RStudio, ve a **Herramientas > Instalar paquetes > Desde paquete en archivo ZIP** y selecciona el archivo.
+- También puedes instalarlo desde la consola con:
+```r
+install.packages("ruta/al/archivo.zip", repos = NULL, type = "source")
+```
+
+### 3.3 Instalación desde GitHub u otras fuentes
+Algunos paquetes están disponibles en GitHub o repositorios privados. Para instalarlos, usa `devtools`:
+```r
+install.packages("devtools")
+library(devtools)
+install_github("usuario/nombre_repositorio")
+```
+
+### 3.4 Carga de paquetes
+Después de instalar un paquete, es necesario cargarlo en la sesión de trabajo antes de usar sus funciones:
+```r
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+library(tableone)
+```
+Si el paquete no está instalado, R mostrará un error. Asegúrate de instalarlo antes de cargarlo.
+
+# Análisis de los datos
+
+## 4. Carga de datos
+
+Para trabajar con datos en R, es necesario cargarlos en el entorno de trabajo. Existen varias maneras de hacerlo, dependiendo del formato del archivo y del método utilizado.
+
+### 4.1 Carga de archivos CSV
+Los archivos CSV (valores separados por comas) son uno de los formatos más utilizados en análisis de datos. Se pueden cargar en R de dos maneras:
+
+- **Desde la consola:**
+```r
+dataset_path <- file.choose()  # Abre un cuadro de diálogo para seleccionar el archivo
+data <- read.csv(dataset_path, header = TRUE, sep = ",")
+head(data)
+```
+
+- **Desde el entorno de RStudio:**
+  1. Ir a la pestaña "Environment" en RStudio.
+  2. Hacer clic en "Import Dataset" > "From Text (readr)".
+  3. Seleccionar el archivo CSV y configurar las opciones de importación.
+  4. Hacer clic en "Import" para cargar los datos en R.
+
+### 4.2 Carga de archivos Excel
+Si el archivo está en formato Excel (`.xlsx` o `.xls`), se necesita el paquete `readxl`.
+
+- **Desde la consola:**
+```r
+install.packages("readxl")
+library(readxl)
+data <- read_excel("ruta/al/archivo.xlsx", sheet = 1)
+head(data)
+```
+
+- **Desde el entorno de RStudio:**
+  1. Instalar el paquete `readxl` si no está instalado.
+  2. Ir a la pestaña "Environment" en RStudio.
+  3. Hacer clic en "Import Dataset" > "From Excel".
+  4. Seleccionar el archivo Excel y elegir la hoja que se quiere importar.
+  5. Hacer clic en "Import".
+
+### 4.3 Verificación de los datos cargados
+Después de cargar un archivo, es importante revisar su estructura:
+```r
+str(data)  # Muestra la estructura de los datos
+summary(data)  # Resumen estadístico de las variables
+head(data)  # Primeras filas del dataset
+dim(data)  # Dimensiones (número de filas y columnas)
+```
+
+## 5. Análisis exploratorio de datos
+
+### 5.1 Tipos de variables en un conjunto de datos
+En un conjunto de datos podemos encontrar diferentes tipos de variables. Identificar correctamente su tipo es crucial para aplicar los análisis estadísticos adecuados. Los principales tipos de variables son:
+
+- **Numéricas**: Representan valores cuantitativos y pueden ser:
+  - **Continuas**: Pueden tomar cualquier valor dentro de un rango (ejemplo: peso, altura, edad con decimales).
+  ```r
+  data$altura <- as.numeric(data$altura)  # Convertir a numérica continua
+  ```
+  - **Discretas**: Toman valores enteros (ejemplo: número de hijos, número de mutaciones detectadas).
+  ```r
+  data$num_hijos <- as.integer(data$num_hijos)  # Convertir a numérica discreta
+  ```
+- **Categóricas**: Representan categorías o grupos y pueden ser:
+  - **Nominales**: No tienen un orden inherente (ejemplo: género, tipo de enfermedad).
+  ```r
+  data$genero <- as.character(data$genero)  # Convertir a variable de texto
+  ```
+  - **Ordinales**: Tienen un orden jerárquico (ejemplo: estadios de una enfermedad: leve, moderado, grave).
+  ```r
+  data$gravedad <- factor(data$gravedad, labels = c("leve", "moderado", "grave"), ordered = TRUE)  # Convertir a factor ordinal
+  ```
+
+Para verificar el tipo de cada variable de forma conjunta en nuestro dataset usamos:
+```r
+str(data)  # Muestra la estructura del dataset con los tipos de variables
+```
+```r
+class(data$variable)  # Indica la clase específica de una variable en particular
+```
+
+### 5.2 Resumen estadístico de los datos
+Podemos obtener estadísticas descriptivas básicas para analizar la distribución de los datos:
+```r
+summary(data)  # Muestra estadísticas generales como media, mediana, percentiles
+```
+
+Si queremos estadísticas detalladas de una variable específica:
+```r
+summary(data$variable_interes)
+```
+
+### 5.3 Visualización de datos
+Para entender mejor la distribución de los datos, se pueden realizar gráficos exploratorios:
+
+- **Histogramas** para visualizar la distribución de variables numéricas:
+```r
+ggplot(data, aes(x = variable_numerica)) +
+  geom_histogram(binwidth = 10, fill = "blue", color = "black") +
+  theme_minimal()
+```
+
+- **Gráficos de dispersión** para analizar la relación entre dos variables:
+```r
+ggplot(data, aes(x = variable_x, y = variable_y, color = factor(grupo))) +
+  geom_point() +
+  theme_minimal()
+```
+
+- **Boxplots** para comparar distribuciones entre grupos:
+```r
+ggplot(data, aes(x = factor(variable_categorica), y = variable_numerica)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  theme_minimal()
+```
+### 5.4 Combinación de datos
+
+Cuando trabajamos con varios conjuntos de datos, a menudo necesitamos combinarlos en un solo dataframe. Podemos hacerlo de distintas maneras dependiendo de las variables compartidas entre ambos datasets:
+
+- **Unión por filas (`rbind`)**: Se usa cuando ambos dataframes tienen las mismas columnas.
+  ```r
+  data_combinado <- rbind(data1, data2)  # Une filas de data1 y data2
+  ```
+  Si hay diferencias en los tipos de datos entre las columnas de los dataframes, podemos usar `rbind.data.frame` para forzar la combinación:
+  ```r
+  data_combinado <- rbind.data.frame(data1, data2)
+  ```
+
+- **Unión por columnas (`cbind`)**: Se usa cuando ambos dataframes tienen el mismo número de filas pero distintas variables.
+  ```r
+  data_combinado <- cbind(data1, data2)  # Une columnas de data1 y data2
+  ```
+
+- **Unión por variables comunes (`merge`)**: Se usa cuando hay columnas compartidas entre ambos dataframes.
+  ```r
+  data_combinado <- merge(data1, data2, by = "ID")  # Une dataframes por la variable ID
+  ```
+  También se puede especificar el tipo de unión:
+  ```r
+  data_combinado <- merge(data1, data2, by = "ID", all = TRUE)  # Unión completa (full join)
+  data_combinado <- merge(data1, data2, by = "ID", all.x = TRUE)  # Unión a la izquierda (left join)
+  data_combinado <- merge(data1, data2, by = "ID", all.y = TRUE)  # Unión a la derecha (right join)
+  ```
+
+- **Selección de variables (`select`)**: En ocasiones, solo necesitamos algunas columnas específicas de los dataframes combinados. Para ello, usamos la función `select` del paquete `dplyr`.
+  ```r
+  library(dplyr)
+  data_seleccionado <- select(data_combinado, ID, variable1, variable2)  # Selecciona solo las columnas ID, variable1 y variable2
+  ```
+  También podemos eliminar columnas no deseadas con `select(-columna_a_eliminar)`:
+  ```r
+  data_seleccionado <- select(data_combinado, -columna_no_deseada)  # Elimina una columna específica
+  ``` 
+
+# Conclusión
+Esta guía proporciona un punto de partida para el análisis de datos en R. Se recomienda explorar más paquetes y funciones para análisis avanzados.
